@@ -1,0 +1,232 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="ProviderLogin.aspx.cs" Inherits="ProviderLogin" %>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Provider Login</title>
+    <style>
+        /* نفس جميع الـ CSS الموجودة في الكود الأصلي */
+        * {margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
+        :root{--primary:#2c7fb8;--primary-dark:#1e5a8a;--secondary:#4CAF50;--lab-color:#FF6B6B;--radiology-color:#4ECDC4;--hospital-color:#45B7D1;--dark:#2c3e50;--light:#ecf0f1;--gray:#95a5a6;}
+        body{background:linear-gradient(135deg,#ffffff 0%,#ffffff 100%);color:var(--dark);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;}
+        .container{display:flex;width:1000px;max-width:95%;background:white;border-radius:20px;box-shadow:0 15px 30px rgba(1,1,7,0.988);overflow:hidden;}
+        .left-section{flex:1;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;padding:100px 40px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;}
+        .left-section::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');background-size:cover;}
+        .logo{font-size:28px;font-weight:700;margin-bottom:30px;display:flex;align-items:center;position:relative;z-index:1;}
+        .logo-icon{font-size:32px;margin-right:10px;}
+        .left-section h1{font-size:32px;margin-bottom:20px;line-height:1.2;position:relative;z-index:1;}
+        .left-section p{font-size:16px;line-height:1.6;opacity:0.9;position:relative;z-index:1;}
+        .healthcare-icons{display:flex;gap:20px;margin-top:30px;position:relative;z-index:1;}
+        .health-icon{font-size:40px;opacity:0.8;}
+        .right-section{flex:1;padding:50px 40px;display:flex;flex-direction:column;justify-content:center;}
+        .right-section h2{font-size:45px;margin-bottom:10px;color:var(--dark);}
+        .right-section p{color:var(--gray);margin-bottom:30px;line-height:1.5;}
+        .provider-type-selector{margin-bottom:25px;}
+        .provider-type-label{font-size:14px;font-weight:600;margin-bottom:10px;color:var(--dark);display:block;}
+        .provider-options{display:flex;gap:10px;margin-bottom:20px;}
+        @media(max-width:768px){.provider-options{flex-direction:column;}}
+        .provider-option{flex:1;border:2px solid #e0e0e0;border-radius:10px;padding:15px;text-align:center;cursor:pointer;transition:all 0.3s ease;background:white;}
+        .provider-option:hover{transform:translateY(-3px);box-shadow:0 5px 15px rgba(0,0,0,0.1);}
+        .provider-option.selected{border-color:var(--primary);background-color:#ffffff;}
+        .provider-option.lab.selected{border-color:var(--lab-color);background-color:#fff0f0;}
+        .provider-option.radiology.selected{border-color:var(--radiology-color);background-color:#73a88237;}
+        .provider-option.hospital.selected{border-color:var(--hospital-color);background-color:#f0f8ff;}
+        .provider-icon{font-size:24px;margin-bottom:8px;}
+        .provider-name{font-size:14px;font-weight:600;color:var(--dark);}
+        .form-group{margin-bottom:20px;}
+        .form-group label{display:block;margin-bottom:8px;font-size:14px;font-weight:600;color:var(--dark);}
+        .form-control{width:100%;padding:12px 15px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;transition:all 0.3s ease;background:white;}
+        .form-control:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(44,127,184,0.1);}
+        .form-control::placeholder{color:var(--gray);}
+        .password-container{position:relative;}
+        .toggle-password{position:absolute;right:15px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gray);cursor:pointer;}
+        .remember-forgot{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px;font-size:14px;}
+        .remember-me{display:flex;align-items:center;}
+        .remember-me input{margin-right:8px;}
+        .forgot-password{color:var(--primary);text-decoration:none;}
+        .forgot-password:hover{text-decoration:underline;}
+        .btn-login{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;border:none;border-radius:8px;padding:15px 30px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s ease;width:100%;}
+        .btn-login:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(44,127,184,0.4);}
+        .btn-login:active{transform:translateY(0);}
+        .btn-Register{background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:white;border:none;border-radius:8px;padding:15px 30px;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.3s ease;width:100%;}
+        .btn-Register:hover{transform:translateY(-2px);box-shadow:0 5px 15px rgba(44,127,184,0.4);}
+        .btn-Register:active{transform:translateY(0);}
+        .divider{display:flex;align-items:center;margin:25px 0;}
+        .divider::before,.divider::after{content:"";flex:1;border-bottom:1px solid #e0e0e0;}
+        .divider span{padding:0 15px;color:var(--gray);font-size:14px;}
+        .support-links{text-align:center;margin-top:20px;}
+        .support-links a{color:var(--primary);text-decoration:none;font-size:14px;margin:0 10px;}
+        .support-links a:hover{text-decoration:underline;}
+        @media(max-width:768px){.container{flex-direction:column;}.left-section,.right-section{padding:40px 30px;}.healthcare-icons{justify-content:center;}}
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="left-section">
+            <div class="logo"><span class="logo-icon">🏥</span><span>MediConnect Pro</span></div>
+            <h1>Healthcare Provider Portal</h1>
+            <p>Secure access to patient records, diagnostic tools, and healthcare management systems for medical professionals.</p>
+            <div class="healthcare-icons">
+                <div class="health-icon">🔬</div>
+                <div class="health-icon">📊</div>
+                <div class="health-icon">💊</div>
+                <div class="health-icon">❤️</div>
+            </div>
+        </div>
+
+        <div class="right-section">
+            <h2>Provider Login</h2>
+            <p>Access your healthcare provider account</p>
+
+            <div class="provider-type-selector">
+                <label class="provider-type-label">Select Provider Type:</label>
+                <div class="provider-options">
+                    <div class="provider-option lab" id="labOption">
+                        <div class="provider-icon">🔬</div>
+                        <div class="provider-name">Laboratory</div>
+                    </div>
+                    <div class="provider-option radiology" id="radiologyOption">
+                        <div class="provider-icon">📊</div>
+                        <div class="provider-name">Radiology</div>
+                    </div>
+                    <div class="provider-option hospital" id="hospitalOption">
+                        <div class="provider-icon">🏥</div>
+                        <div class="provider-name">Hospital</div>
+                    </div>
+                </div>
+            </div>
+
+            <form id="loginForm" runat="server">
+
+                <div class="form-group">
+                    <label for="username">Username or Provider ID</label>
+                    <asp:TextBox ID="txtusername" runat="server" CssClass="form-control" placeholder="Enter your username or provider ID"></asp:TextBox>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-container">
+                        <asp:TextBox ID="txtpassword" runat="server" TextMode="Password" CssClass="form-control" placeholder="Enter your password"></asp:TextBox>
+
+                        <button type="button" class="toggle-password" id="togglePassword">👁️</button>
+                    </div>
+                </div>
+
+                <div class="remember-forgot">
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </div>
+
+                <asp:Button ID="btnLogin" runat="server" CssClass="btn-login" Text="Sign In" OnClick="btnLogin_Click" />
+                <asp:Label ID="lblMsg" runat="server" 
+                           ForeColor="Red" 
+                           Font-Size="14px">
+                </asp:Label>
+                <asp:HiddenField ID="hfProvider" runat="server" />
+
+
+
+            </form>
+
+            <div class="divider"><span>or</span></div>
+            <button type="submit" onclick="window.location.href='providerReg.aspx'" class="btn-Register">Register</button>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const labOption = document.getElementById('labOption');
+            const radiologyOption = document.getElementById('radiologyOption');
+            const hospitalOption = document.getElementById('hospitalOption');
+            const loginForm = document.getElementById('loginForm');
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+
+            let selectedProvider = null;
+
+            labOption.addEventListener('click', function () { selectProvider('lab'); });
+            radiologyOption.addEventListener('click', function () { selectProvider('radiology'); });
+            hospitalOption.addEventListener('click', function () { selectProvider('hospital'); });
+
+            function selectProvider(provider) {
+                labOption.classList.remove('selected');
+                radiologyOption.classList.remove('selected');
+                hospitalOption.classList.remove('selected');
+
+                if (provider === 'lab') { labOption.classList.add('selected'); selectedProvider = 'Laboratory'; }
+                else if (provider === 'radiology') { radiologyOption.classList.add('selected'); selectedProvider = 'Radiology'; }
+                else if (provider === 'hospital') { hospitalOption.classList.add('selected'); selectedProvider = 'Hospital'; }
+            }
+
+            togglePassword.addEventListener('click', function () {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                togglePassword.textContent = type === 'password' ? '👁️' : '🔒';
+            });
+
+            loginForm.addEventListener('submit', function (e) {
+                
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                if (!selectedProvider) { alert('Please select your provider type'); return; }
+                if (!username || !password) { alert('Please fill in all fields'); return; }
+                alert(`Login successful!\nWelcome ${username} from ${selectedProvider} department.`);
+                loginForm.reset();
+            });
+
+            selectProvider(null);
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+        const labOption = document.getElementById('labOption');
+        const radiologyOption = document.getElementById('radiologyOption');
+        const hospitalOption = document.getElementById('hospitalOption');
+
+        const hfProvider = document.getElementById('<%= hfProvider.ClientID %>');
+
+        const togglePassword = document.getElementById("togglePassword");
+        const passwordInput = document.getElementById('<%= txtpassword.ClientID %>');
+        
+        let selectedProvider = null;
+
+        labOption.onclick = () => selectProvider('Laboratory');
+        radiologyOption.onclick = () => selectProvider('Radiology');
+        hospitalOption.onclick = () => selectProvider('Hospital');
+
+        function selectProvider(provider) {
+            selectedProvider = provider;
+            hfProvider.value = provider;
+
+            labOption.classList.remove('selected');
+            radiologyOption.classList.remove('selected');
+            hospitalOption.classList.remove('selected');
+
+            if (provider === "Laboratory") labOption.classList.add('selected');
+            if (provider === "Radiology") radiologyOption.classList.add('selected');
+            if (provider === "Hospital") hospitalOption.classList.add('selected');
+        }
+
+        togglePassword.addEventListener("click", function () {
+            const type = passwordInput.type === "password" ? "text" : "password";
+            passwordInput.type = type;
+            togglePassword.textContent = type === "password" ? "👁️" : "🔒";
+        });
+
+    });
+
+        
+
+    </script>
+</body>
+
+</html>

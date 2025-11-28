@@ -1,0 +1,937 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Lab.aspx.cs" Inherits="Lab" %>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratory Provider Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2c7fb8;
+            --primary-dark: #1e5a8a;
+            --lab-color: #FF6B6B;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --gray: #95a5a6;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --error: #e74c3c;
+        }
+
+        body {
+            background: #f5f7fa;
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        .header {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+            margin-right: 10px;
+            color: var(--lab-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--lab-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            font-size: 32px;
+            margin-right: 15px;
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--lab-color);
+            color: white;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .card-subtitle {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* Search Section */
+        .search-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .search-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .search-form {
+            display: flex;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--lab-color);
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--lab-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #e55c5c;
+            transform: translateY(-2px);
+        }
+
+        /* Citizen Info Section */
+        .citizen-info {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .citizen-info.active {
+            display: block;
+        }
+
+        .citizen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .citizen-name {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .citizen-id {
+            color: var(--gray);
+            font-size: 16px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .info-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        /* Test Results Section */
+        .test-results {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .test-results.active {
+            display: block;
+        }
+
+        .test-form {
+            margin-bottom: 25px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .test-parameters {
+            margin-top: 20px;
+        }
+
+        .parameter-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .parameter-name {
+            flex: 2;
+            font-weight: 500;
+        }
+
+        .parameter-value {
+            flex: 1;
+        }
+
+        .parameter-unit {
+            flex: 1;
+            color: var(--gray);
+        }
+
+        .parameter-status {
+            flex: 1;
+            text-align: center;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-normal {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-abnormal {
+            background: var(--error);
+            color: white;
+        }
+
+        .status-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .upload-section.active {
+            display: block;
+        }
+
+        .upload-area {
+            border: 2px dashed #e0e0e0;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: var(--lab-color);
+            background: #f8f9fa;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: var(--gray);
+        }
+
+        .upload-text {
+            color: var(--gray);
+            margin-bottom: 15px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-list {
+            margin-top: 20px;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .file-name {
+            font-weight: 500;
+        }
+
+        .file-size {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-error {
+            background: var(--error);
+            color: white;
+        }
+
+       
+
+        .action-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            border-color: var(--lab-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: var(--lab-color);
+        }
+
+        .action-text {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        /* Recent Activity */
+        .recent-activity {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .activity-list {
+            margin-top: 20px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-left: 4px solid var(--lab-color);
+            background: #f8f9fa;
+            margin-bottom: 10px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .activity-icon {
+            font-size: 20px;
+            margin-right: 15px;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .activity-time {
+            color: var(--gray);
+            font-size: 12px;
+        }
+
+        /* Test Types */
+        .test-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .test-type-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .test-type-btn:hover {
+            border-color: var(--lab-color);
+            background: #fff0f0;
+        }
+
+        .test-type-btn.active {
+            border-color: var(--lab-color);
+            background: var(--lab-color);
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+
+            .parameter-row {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <span class="logo-icon">🔬</span>
+                <span>Advanced Laboratory System</span>
+            </div>
+            <div class="user-info">
+                <div class="user-avatar">LT</div>
+                <div>
+                    <div>Dr. Lisa Thompson</div>
+                    <div style="font-size: 12px; color: var(--gray);">Lab Director</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="dashboard-cards">
+                <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🔬</div>
+                    <div>
+                        <div class="card-title">Laboratory Dashboard</div>
+                        <div class="card-subtitle">Test Results & Analysis</div>
+                    </div>
+                </div>
+                <div class="card-stats">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Pending Tests:</span>
+                        <span style="font-weight: 600; color: var(--warning);">12</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Completed Today:</span>
+                        <span style="font-weight: 600; color: var(--success);">28</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Abnormal Results:</span>
+                        <span style="font-weight: 600; color: var(--error);">3</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Quality Control:</span>
+                        <span style="font-weight: 600; color: var(--success);">✓ Passed</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📊</div>
+                    <div>
+                        <div class="card-title">Test Statistics</div>
+                        <div class="card-subtitle">Today's performance metrics</div>
+                    </div>
+                </div>
+                <div class="card-stats">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Blood Tests:</span>
+                        <span style="font-weight: 600;">15</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Urine Analysis:</span>
+                        <span style="font-weight: 600;">8</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Microbiology:</span>
+                        <span style="font-weight: 600;">3</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Turnaround Time:</span>
+                        <span style="font-weight: 600;">2.3h</span>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Search Citizen Section -->
+            <div class="search-section">
+                <div class="search-title">Search Citizen Laboratory Records</div>
+                <div class="search-form">
+                    <div class="form-group">
+                        <label for="nationalId">National ID Number</label>
+                        <input type="text" id="nationalId" class="form-control" placeholder="Enter citizen's national ID">
+                    </div>
+                    <button type="button" class="btn btn-primary" id="searchBtn">Search Citizen</button>
+                </div>
+            </div>
+
+            <!-- Citizen Information -->
+            <div id="citizenInfo" class="citizen-info">
+                <!-- Citizen info will be dynamically loaded here -->
+            </div>
+
+            <!-- Test Results Entry Section -->
+            <div id="testResults" class="test-results">
+                <!-- Copy the test results HTML section as-is -->
+            </div>
+
+            <!-- Upload Lab Reports Section -->
+            <div id="uploadSection" class="upload-section">
+                <!-- Copy the upload section HTML as-is -->
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="recent-activity">
+                <!-- Copy the recent activity HTML as-is -->
+            </div>
+        </div>
+    </form>
+
+    <script>
+        // Sample citizen data
+        const citizenDatabase = {
+            '19907512345678': {
+                name: 'Ahmed Mohamed Hassan',
+                dob: '1990-07-15',
+                gender: 'Male',
+                bloodType: 'O+',
+                address: '123 Main Street, Cairo',
+                phone: '+20 100 123 4567',
+                emergencyContact: 'Fatima Hassan (Sister) - +20 100 765 4321',
+                medicalHistory: ['Hypertension', 'Allergy to Penicillin'],
+                insurance: 'National Health Insurance - Gold Plan',
+                recentTests: ['CBC (2024-01-15)', 'Lipid Profile (2024-01-10)'],
+                pendingTests: ['Liver Function Test'],
+                labNotes: 'Follow up on elevated glucose levels'
+            },
+            '19908276543210': {
+                name: 'Mona Salah Abdelrahman',
+                dob: '1990-08-27',
+                gender: 'Female',
+                bloodType: 'A-',
+                address: '456 Garden City, Alexandria',
+                phone: '+20 122 345 6789',
+                emergencyContact: 'Omar Abdelrahman (Husband) - +20 122 987 6543',
+                medicalHistory: ['Asthma', 'Diabetes Type 2'],
+                insurance: 'Private Insurance - Comprehensive',
+                recentTests: ['HbA1c (2024-01-12)', 'Urinalysis (2024-01-12)'],
+                pendingTests: ['Thyroid Panel'],
+                labNotes: 'Monitor HbA1c quarterly'
+            },
+            '19851103456789': {
+                name: 'Youssef Mahmoud Ibrahim',
+                dob: '1985-11-03',
+                gender: 'Male',
+                bloodType: 'B+',
+                address: '789 Heliopolis, Giza',
+                phone: '+20 111 222 3333',
+                emergencyContact: 'Nora Ibrahim (Wife) - +20 111 333 2222',
+                medicalHistory: ['High Cholesterol'],
+                insurance: 'National Health Insurance - Basic Plan',
+                recentTests: ['Lipid Profile (2024-01-08)', 'CBC (2024-01-08)'],
+                pendingTests: ['Kidney Function Test'],
+                labNotes: 'Stable lipid levels on medication'
+            }
+        };
+
+        let files = [];
+        let currentTestType = 'blood';
+
+        // Search functionality
+        document.getElementById('searchBtn').addEventListener('click', function () {
+            const nationalId = document.getElementById('nationalId').value.trim();
+
+            if (!nationalId) {
+                alert('Please enter a national ID number');
+                return;
+            }
+
+            if (citizenDatabase[nationalId]) {
+                const citizen = citizenDatabase[nationalId];
+                const citizenInfo = document.getElementById('citizenInfo');
+
+                citizenInfo.innerHTML = `
+                    <div class="citizen-header">
+                        <div>
+                            <div class="citizen-name">${citizen.name}</div>
+                            <div class="citizen-id">National ID: ${nationalId}</div>
+                        </div>
+                        <div style="color: var(--success); font-weight: 600;">✓ Laboratory Record Found</div>
+                    </div>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Date of Birth</div>
+                            <div class="info-value">${citizen.dob}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Gender</div>
+                            <div class="info-value">${citizen.gender}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Blood Type</div>
+                            <div class="info-value">${citizen.bloodType}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Phone</div>
+                            <div class="info-value">${citizen.phone}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Medical History</div>
+                            <div class="info-value">${citizen.medicalHistory.join(', ')}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Recent Tests</div>
+                            <div class="info-value">${citizen.recentTests.join('<br>')}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Pending Tests</div>
+                            <div class="info-value">${citizen.pendingTests.join(', ')}</div>
+                        </div>
+                        <div class="info-item">
+                            <div class="info-label">Lab Notes</div>
+                            <div class="info-value">${citizen.labNotes}</div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="btn btn-primary" id="showTestResults">Enter Test Results</button>
+                        <button class="btn btn-primary" id="showUpload" style="margin-left: 10px;">Upload Lab Reports</button>
+                    </div>
+                `;
+
+                citizenInfo.classList.add('active');
+
+                // Show test results section
+                document.getElementById('showTestResults').addEventListener('click', function () {
+                    document.getElementById('testResults').classList.add('active');
+                });
+
+                // Show upload section
+                document.getElementById('showUpload').addEventListener('click', function () {
+                    document.getElementById('uploadSection').classList.add('active');
+                });
+            } else {
+                alert('Citizen not found. Please check the national ID and try again.');
+            }
+        });
+
+        // Test type selection
+        document.querySelectorAll('.test-type-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.test-type-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentTestType = this.getAttribute('data-test');
+                updateTestParameters(currentTestType);
+            });
+        });
+
+        function updateTestParameters(testType) {
+            // In a real application, this would update the test parameters based on test type
+            console.log('Updated test parameters for:', testType);
+        }
+
+        // File upload functionality
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const uploadBtn = document.getElementById('uploadBtn');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = 'var(--lab-color)';
+            uploadArea.style.background = '#f8f9fa';
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = '#e0e0e0';
+            uploadArea.style.background = 'white';
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#e0e0e0';
+            uploadArea.style.background = 'white';
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(newFiles) {
+            for (let file of newFiles) {
+                if (file.size > 10 * 1024 * 1024) {
+                    alert(`File ${file.name} is too large. Maximum size is 10MB.`);
+                    continue;
+                }
+                files.push(file);
+            }
+            updateFileList();
+        }
+
+        function updateFileList() {
+            fileList.innerHTML = '';
+            files.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div>
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${formatFileSize(file.size)}</div>
+                    </div>
+                    <div class="file-actions">
+                        <button class="btn btn-error btn-sm" onclick="removeFile(${index})">Remove</button>
+                    </div>
+                `;
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        function removeFile(index) {
+            files.splice(index, 1);
+            updateFileList();
+        }
+
+        uploadBtn.addEventListener('click', () => {
+            if (files.length === 0) {
+                alert('Please select at least one file to upload.');
+                return;
+            }
+
+            // Simulate upload process
+            uploadBtn.textContent = 'Uploading Lab Reports...';
+            uploadBtn.disabled = true;
+
+            setTimeout(() => {
+                alert(`Successfully uploaded ${files.length} lab report(s) to citizen record!`);
+                files = [];
+                updateFileList();
+                uploadBtn.textContent = 'Upload to Citizen Record';
+                uploadBtn.disabled = false;
+                fileInput.value = '';
+            }, 2000);
+        });
+
+        // Save test results
+        document.getElementById('saveResultsBtn').addEventListener('click', function () {
+            const testType = document.getElementById('testType').value;
+            const testDate = document.getElementById('testDate').value;
+
+            if (!testType || !testDate) {
+                alert('Please select test type and date');
+                return;
+            }
+
+            // Simulate saving results
+            this.textContent = 'Saving Results...';
+            this.disabled = true;
+
+            setTimeout(() => {
+                alert('Test results saved successfully!');
+                this.textContent = 'Save Test Results';
+                this.disabled = false;
+            }, 1500);
+        });
+
+        // Show upload from test results
+        document.getElementById('showUploadBtn').addEventListener('click', function () {
+            document.getElementById('uploadSection').classList.add('active');
+        });
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Quick actions functionality
+        document.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const action = this.querySelector('.action-text').textContent;
+                alert(`Opening ${action} module...`);
+            });
+        });
+
+        // Set today's date as default
+        document.getElementById('testDate').valueAsDate = new Date();
+    </script>
+</body>
+</html>
+

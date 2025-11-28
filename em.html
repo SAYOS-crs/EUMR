@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Assistance System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #e74c3c;
+            --primary-dark: #c0392b;
+            --secondary: #3498db;
+            --dark: #2c3e50;
+            --light: #000000;
+            --gray: #97a2a3;
+            --success: #2ecc71;
+        }
+
+         .form-row {
+            display: grid;
+            grid-template-columns: 3fr 5fr;
+            gap: 65px;
+            padding: 1cap;
+        }
+          .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffffff, #ffffff);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(0, 122, 245, 0.899);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.91);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 2px;
+            color: var(--light);
+        }
+
+        header p {
+            color: var(--light);
+            font-size: 1rem;
+        }
+
+        .emergency-alert {
+            background: var(--primary-dark);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 4px 15px rgba(238, 27, 3, 0.892);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.9; }
+            50% { opacity: 1; }
+            100% { opacity: 0.9; }
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.719);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgb(0, 0, 0);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: var(--light);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary);
+            display: flex;
+            align-items: center;
+        }
+
+        .card h2 i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        .user-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        textarea {
+            width: 70%;
+            height:35px;
+            padding: 3.5px;
+            border: 1px solid #000000;
+            border-radius: 7px;
+            font-size: 13px;
+            resize: vertical; /* يخلي المستخدم يكبره عمودي فقط */
+        }
+
+        @media (max-width: 480px) {
+            .user-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-item {
+            margin-bottom: 15px;
+        }
+
+        .info-item label {
+            display: block;
+            color: var(--dark);
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .info-item .value {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .family-members {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .family-member {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .family-member:hover {
+            background: rgba(52, 152, 219, 0.2);
+        }
+
+        .member-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .member-info {
+            flex:1;
+        }
+
+        .member-name {
+            font-weight: 600;
+            margin-bottom: 1px;
+        }
+
+        .member-relation {
+            color: var(--gray);
+            font-size:1rem;
+        }
+
+        .call-btn {
+            background: var(--success);
+            color: rgb(248, 245, 245);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .call-btn:hover {
+            background: #dd0b0b;
+        }
+
+        .emergency-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .emergency-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .emergency-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .emergency-btn:active {
+            transform: scale(0.95);
+        }
+
+        .location-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .location-status {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(44, 62, 80, 0.7);
+            padding: 15px 25px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+        }
+
+        .location-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .location-info {
+            text-align: left;
+        }
+
+        .location-info .status {
+            font-weight: bold;
+            color: var(--success);
+        }
+
+        .location-info .address {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .location-map {
+            height: 300px;
+            background: rgba(44, 62, 80, 0.7);
+            border-radius: 10px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray);
+            font-style: italic;
+        }
+
+        .instructions {
+            background: rgba(44, 62, 80, 0.7);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .instructions h2 {
+            color: var(--light);
+            margin-bottom: 15px;
+        }
+
+        .instructions ol {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Icons */
+        .icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+
+        /* Status indicators */
+        .status-on {
+            color: var(--success);
+        }
+
+        .status-off {
+            color: var(--gray);
+        }
+
+        /* Toggle switch */
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin-left: 15px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--success);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Emergency Assistance System</h1>
+            <p>Your safety is our priority. In case of emergency, press the button below.</p>
+        </header>
+
+        <div class="emergency-alert">
+            <h2>EMERGENCY ALERT SYSTEM ACTIVE</h2>
+            <p>Your location will be shared with emergency services and family members when activated</p>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <h2><i class="icon">👤</i> Citizen Information</h2>
+               <!-- Personal Information -->
+                    <div class="info-section">
+                        <form class="citizen-form" id="citizenForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="fullName"><h4> Full Name</h4></label>
+                                    <input type="text" id="fullName" name="fullName" required readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="nationalId"><i class="fas fa-id-card"></i> <h4>National ID</h4></label>
+                                    <input type="text" id="nationalId" name="nationalId" required readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="dateOfBirth"><h4> Date of Birth</h4></label>
+                                    <input type="date" id="dateOfBirth" name="dateOfBirth" required readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="age"><h4> Age</h4></label>
+                                    <input type="number" id="age" name="age" required readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="bloodType"><h4>Blood Type</h4></label>
+                                    <input type="text" id="bloodType" name="bloodType" required readonly>
+
+                                </div>
+                                
+
+                                <div class="form-group">
+                                    <label for="phone"> <h4>Phone Number</h4></label>
+                                    <input type="tel" id="phone" name="phone" required readonly>
+                                </div>
+                                
+                            </div>
+
+                             <div class="form-row">
+                                <div class="form-group">
+                                    <label for="bloodType"><h4>Gender</h4></label>
+                                    <input type="text" id="Gender" name="Gender" required readonly>
+
+                                </div>
+
+
+
+                           
+
+                           
+                            <div>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            </div>
+
+            <div class="card">
+                <h2><i class="icon">👨‍👩‍👧‍👦</i> Family Members</h2>
+                <div class="family-members">
+                    <div class="family-member">
+                        <div class="member-avatar">SS</div>
+                        <div class="member-info">
+                            <div class="member-name">Sarah Smith</div>
+                            <div class="member-relation">Wife</div>
+                        </div>
+                        <button class="call-btn">📞</button>
+                    </div>
+                    <div class="family-member">
+                        <div class="member-avatar">MS</div>
+                        <div class="member-info">
+                            <div class="member-name">Michael Smith</div>
+                            <div class="member-relation">Son</div>
+                        </div>
+                        <button class="call-btn">📞</button>
+                    </div>
+                    <div class="family-member">
+                        <div class="member-avatar">ES</div>
+                        <div class="member-info">
+                            <div class="member-name">Emily Smith</div>
+                            <div class="member-relation">Daughter</div>
+                        </div>
+                        <button class="call-btn">📞</button>
+                    </div>
+                    <div class="family-member">
+                        <div class="member-avatar">RS</div>
+                        <div class="member-info">
+                            <div class="member-name">Robert Smith</div>
+                            <div class="member-relation">Father</div>
+                        </div>
+                        <button class="call-btn">📞</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="emergency-section">
+            <button class="emergency-btn" id="emergencyButton">
+                EMERGENCY<br>ALERT
+            </button>
+        </div>
+
+        <div class="location-section">
+            <div class="location-status">
+                <div class="location-icon">📍</div>
+                <div class="location-info">
+                    <div class="status" id="locationStatus">Location Sharing: INACTIVE</div>
+                    <div class="address" id="locationAddress">Press emergency button to activate location sharing</div>
+                </div>
+            </div>
+            <div class="location-map" id="locationMap">
+                Map will appear here when location is activated
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h2>Emergency Instructions</h2>
+            <ol>
+                <li>Press the EMERGENCY ALERT button in case of any emergency situation</li>
+                <li>Your location will automatically be shared with emergency services and your family members</li>
+                <li>Remain calm and stay on the line if possible when emergency services call you back</li>
+                <li>If safe, move to a secure location while waiting for assistance</li>
+                <li>Keep your phone accessible and charged</li>
+            </ol>
+        </div>
+
+        <footer>
+            <p>Emergency Assistance System &copy; 2023 | For emergency use only</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const emergencyButton = document.getElementById('emergencyButton');
+            const locationStatus = document.getElementById('locationStatus');
+            const locationAddress = document.getElementById('locationAddress');
+            const locationMap = document.getElementById('locationMap');
+            
+            let locationActive = false;
+            
+            emergencyButton.addEventListener('click', function() {
+                if (!locationActive) {
+                    // Activate location sharing
+                    locationActive = true;
+                    locationStatus.textContent = 'Location Sharing: ACTIVE';
+                    locationStatus.className = 'status status-on';
+                    
+                    // Simulate getting location
+                    simulateLocationDetection();
+                    
+                    // Change button appearance
+                    emergencyButton.style.background = 'var(--primary-dark)';
+                    emergencyButton.style.animation = 'none';
+                    
+                    // Show alert
+                    alert('EMERGENCY ALERT ACTIVATED!\n\nYour location is now being shared with emergency services and your family members.\n\nHelp is on the way.');
+                } else {
+                    // Deactivate location sharing
+                    locationActive = false;
+                    locationStatus.textContent = 'Location Sharing: INACTIVE';
+                    locationStatus.className = 'status status-off';
+                    locationAddress.textContent = 'Press emergency button to activate location sharing';
+                    locationMap.innerHTML = 'Map will appear here when location is activated';
+                    
+                    // Reset button appearance
+                    emergencyButton.style.background = 'var(--primary)';
+                    emergencyButton.style.animation = 'pulse 2s infinite';
+                    
+                    alert('Emergency alert deactivated.');
+                }
+            });
+            
+            function simulateLocationDetection() {
+                // Simulate getting user's location
+                const addresses = [
+                    '123 Main Street, Downtown, New York, NY 10001',
+                    '456 Oak Avenue, Central District, Los Angeles, CA 90001',
+                    '789 Pine Road, Business District, Chicago, IL 60601'
+                ];
+                
+                // Pick a random address for simulation
+                const randomAddress = addresses[Math.floor(Math.random() * addresses.length)];
+                locationAddress.textContent = Current `Location: ${randomAddress}`;
+                
+                // Simulate map display
+                locationMap.innerHTML = `
+                    <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                        <div style="font-size:24px;margin-bottom:10px;">📍</div>
+                        <div style="font-weight:bold;margin-bottom:5px;">Live Location Tracking</div>
+                        <div style="color:var(--success);font-weight:bold;">ACTIVE</div>
+                        <div style="margin-top:15px;text-align:center;padding:0 20px;">
+                            Your location is being shared with emergency services<br>and family contacts
+                        </div>
+                    </div>
+                `;
+                locationMap.style.background = 'rgba(46, 204, 113, 0.1)';
+                locationMap.style.border = '2px solid var(--success)';
+            }
+            
+            // Add click event to call buttons
+            const callButtons = document.querySelectorAll('.call-btn');
+            callButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const memberName = this.closest('.family-member').querySelector('.member-name').textContent;
+                    alert(`Calling ${memberName}...`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
